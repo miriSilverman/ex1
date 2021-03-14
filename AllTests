@@ -1,0 +1,119 @@
+############################################################################
+                                invalid
+############################################################################
+
+
+empty line
+"The given command is invalid\n"
+
+m 3 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"The given command is invalid\n"
+
+m C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"The given command is invalid\n"
+
+encode C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"Usage: cipher <encode|decode> <k> <source path file> <output path file>\n"
+
+encode 2 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write 5
+"Usage: cipher <encode|decode> <k> <source path file> <output path file>\n"
+
+decode C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"Usage: cipher <encode|decode> <k> <source path file> <output path file>\n"
+
+decode 2 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write 5
+"Usage: cipher <encode|decode> <k> <source path file> <output path file>\n"
+
+check C:\Users\miris\CLionProjects\ex1\write
+"Usage: cipher <check> <source path file> <output path file>\n"
+
+check 2 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write 5
+"Usage: cipher <check> <source path file> <output path file>\n"
+
+encode 0 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"The given shifts value is invalid\n"
+
+decode 0 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"The given shifts value is invalid\n"
+
+encode 2 C:\Users\miris\CLionProjects\ex1\readd C:\Users\miris\CLionProjects\ex1\write
+"The given file is invalid\n"
+
+decode 2 C:\Users\miris\CLionProjects\ex1\readd C:\Users\miris\CLionProjects\ex1\write
+"The given file is invalid\n"
+
+check C:\Users\miris\CLionProjects\ex1\readd C:\Users\miris\CLionProjects\ex1\write
+"The given file is invalid\n"
+
+check C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\writee
+"The given file is invalid\n"
+
+############################################################################
+                                valid
+############################################################################
+
+a mKZ!z
+encode 1 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+b nLA!a
+
+
+a mKZ!z
+encode -1 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+z lJY!y
+
+a mKZ!z
+encode 27 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+b nLA!a
+
+
+a mKZ!z
+decode -1 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+b nLA!a
+
+
+a mKZ!z
+decode 1 C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+z lJY!y
+
+
+a mKZ!z
+b nLA!a
+check C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+Valid encrypting with k = 1
+
+
+a mKZ!z
+z lJY!y
+check C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+Valid encrypting with k = 25
+
+z lJY!y
+a mKZ!z
+check C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+Valid encrypting with k = 1
+
+
+
+a mKZ!z
+z lJY!z
+check C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"Invalid encrypting\n"
+
+
+a mKZ!z
+z lJY!
+check C:\Users\miris\CLionProjects\ex1\read C:\Users\miris\CLionProjects\ex1\write
+"Invalid encrypting\n"
+
+
+
+
+
+
+
+
+
+
+
+
+
