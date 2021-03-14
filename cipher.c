@@ -36,57 +36,19 @@ const int LETTERS_NUM = 26;
 
 
 int main(int argc, char* argv[]) {
-//    printf("Hello, World!\n");
-//    for (int i = 0; i < argc; ++i) {
-//        printf("%s\n", argv[i]);
-//    }
-//    check("bcaB!AnN   a", "abzA!ZmM   z");
-//    check("bcaB!AnN   a", "abzA!ZmM   z");
-//    check("az", "ba");
-//    check("zam", "abn");
-//    check("za", "yz");
-
-//    int x;
-//    int y = 2;
-//    if (y == 2)
-//    {
-//        int x;
-//        printf("%d" , x);
-//
-//    }
-//    printf("%d" , x);
-//    printf("Size of char %lu\n", sizeof(char));
-//    printf("Size of short %lu\n", sizeof(short));
-//    printf("Size of int %lu\n", sizeof(int));
-//    printf("Size of long %lu\n", sizeof(long));
-//    printf("Size of float %lu\n", sizeof(float));
-//    printf("Size of double %lu\n", sizeof(double));
-//    printf("Size of long double %lu\n\n", sizeof(long double));
-//
-//    int x = -2;
-//    unsigned int y = x + 1;
-////    int x = pow(2, 31);
-////    short y = x;
-//    printf("2%%5 = %d\n", 2%5);
-//    printf("2%%-5 = %d\n", 2%-5);
-//    printf("-2%%-5 = %d\n", -2%-5);
-//    printf("-2%%5 = %d\n", -2%5);
-//    printf("5%%-2 = %d\n", 5%-2);
-//    printf("-5%%-2 = %d\n", -5%-2);
-
-
-//    printf("%u  %d", -1, -1);
-
-    //  4294967295  -1
-
-
     return tests();
 //    return checkCommand(argc, argv);
 }
 
 
 
-
+/**
+ * Checks that the the command is valid.
+ * @param argc number of arguments
+ * @param argv the arguments
+ * @return EXIT_FAILURE if the command is invalid or if there is a different failure in the program.
+ * otherwise EXIT_SUCCESS.
+ */
 int checkCommand(int argc, char* argv[])
 {
     char* command = argv[1];
@@ -113,6 +75,14 @@ int checkCommand(int argc, char* argv[])
     return EXIT_FAILURE;
 }
 
+/**
+ * Checks encode and decode commands
+ * @param argc number of arguments
+ * @param argv the arguments
+ * @param isEncode 1 if the command is encode, 0 if decode
+ * @return EXIT_FAILURE if the command line is invalid or if there is a problem with the files,
+ * otherwise EXIT_SUCCESS
+ */
 int checkEncode(int argc, char* argv[], int isEncode)
 {
     if (checkArgsNum(argc, 5, ENCODE_ERROR_MSG))
@@ -121,11 +91,6 @@ int checkEncode(int argc, char* argv[], int isEncode)
     }
 
     int k = atoi(argv[2]);
-//    if (k == 0)
-//    {
-//        fprintf(stderr, "%s", INVALID_SHIFT_MSG);
-//        return EXIT_FAILURE;
-//    }
 
     FILE* readingFile = fopen(argv[3], READ_MODE);
     FILE* writingFile = fopen(argv[4], WRITE_MODE);
@@ -134,20 +99,35 @@ int checkEncode(int argc, char* argv[], int isEncode)
         fprintf(stderr, "%s", INVALID_FILE_MSG);
         return EXIT_FAILURE;
     }
-    if (isEncode)
-    {
-        encodeCase(readingFile, writingFile, k);
-    } else
-    {
-        decodeCase(readingFile, writingFile, k);
-    }
+//    if (isEncode)
+//    {
+////        encodeCase(readingFile, writingFile, k);
+////        MOD(k);
+////        encode(readingFile, writingFile, k);
+//    } else
+//    {
+////        decodeCase(readingFile, writingFile, k);
+//        k = -k;
+////        MOD(k);
+////        encode(readingFile, writingFile, k);
+//    }
+    isEncode ? (k = k) : (k = -k);
+    MOD(k);
+    encode(readingFile, writingFile, k);
+
     fclose(readingFile);
     fclose(writingFile);
 
     return EXIT_SUCCESS;
 }
 
-
+/**
+ * Checks if the command check is valid
+ * @param argc number of arguments
+ * @param argv the arguments
+ * @return EXIT_FAILURE if the command line is invalid or if there is a problem with the files,
+ * otherwise EXIT_SUCCESS
+ */
 int checkCommandCheck(int argc, char **argv)
 {
 
@@ -172,6 +152,7 @@ int checkCommandCheck(int argc, char **argv)
 //    fscanf(readingFile, "%s", origin);
 //    fscanf(writingFile, "%s", encrypted);
     check(origin, encrypted);
+
     fclose(readingFile);
     fclose(writingFile);
     return EXIT_SUCCESS;
@@ -179,37 +160,13 @@ int checkCommandCheck(int argc, char **argv)
 
 
 
-void encodeCase(FILE* readingFile, FILE* writingFile, int k)
-{
-    MOD(k);
-    encode(readingFile, writingFile, k);
 
-//    if (k >= 0)
-//    {
-//        encode(readingFile, writingFile, k);
-//    } else
-//    {
-//        decode(readingFile, writingFile, -k);
-//    }
-}
-
-
-void decodeCase(FILE* readingFile, FILE* writingFile, int k)
-{
-    k = -k;
-    MOD(k);
-    encode(readingFile, writingFile, k);
-//    if (k >= 0)
-//    {
-//        decode(readingFile, writingFile, k);
-//    } else
-//    {
-//        encode(readingFile, writingFile, -k);
-//    }
-}
-
-
-
+/**
+ * @param argNum number of arguments
+ * @param rightArgsNum correct number of arguments
+ * @param msg error message
+ * @return EXIT_SUCCESS if argNum is equal to rightArgsNum, EXIT_FAILURE otherwise
+ */
 int checkArgsNum(int argNum, int rightArgsNum, const char* msg)
 {
     if (argNum != rightArgsNum)
@@ -221,8 +178,13 @@ int checkArgsNum(int argNum, int rightArgsNum, const char* msg)
 }
 
 
-
-void encode(FILE* readingFile, FILE* writingFile, int k)
+/**
+ * Encodes the content of the readingFile and writes it in writingFile
+ * @param readingFile file to read from
+ * @param writingFile file to write the encrypting to
+ * @param k the offset parameter todo: not sure?
+ */
+void encode(const FILE* readingFile, FILE* writingFile, int k)
 {
     char c;
     while ((c = fgetc(readingFile)) != EOF)
@@ -232,17 +194,12 @@ void encode(FILE* readingFile, FILE* writingFile, int k)
     }
 }
 
-
-//void decode(FILE* readingFile, FILE* writingFile, int k)
-//{
-//    char c;
-//    while ((c = fgetc(readingFile)) != EOF)
-//    {
-//        c = decodeChar(c, k);
-//        fputc(c, writingFile);
-//    }
-//}
-
+/**
+ * Encodes the char c according to caesar cipher with the offset parameter k
+ * @param c char to encode
+ * @param k offset parameter
+ * @return the encrypted char for c
+ */
 char encodeChar(char c, int k)
 {
     int firstInGap = 0;
@@ -261,16 +218,12 @@ char encodeChar(char c, int k)
     return c;
 }
 
-//
-//char decodeChar(char c, int k)
-//{
-//    k = -k;
-//    MOD(k);
-////    k >= 0 ? (k = k) : (k = LETTERS_NUM + k);
-//    return encodeChar(c, k);
-//}
-
-
+/**
+ * Checks if the string encoded is a valid caesar cipher of the string origin, if it is
+ * valid - prints the k, otherwise prints a message
+ * @param origin string not encrypted
+ * @param encoded encrypted string
+ */
 void check(char *origin, char *encoded) {
     if (strlen(origin) != strlen(encoded))
     {
@@ -281,7 +234,6 @@ void check(char *origin, char *encoded) {
     int i = 0;
     int k = encoded[0] - origin[0] ;
     MOD(k);
-//    k >= 0 ? (k = k) : (k = LETTERS_NUM + k);
     while (origin[i] != '\0')
     {
         if (encodeChar(origin[i], k) != encoded[i])
@@ -293,16 +245,53 @@ void check(char *origin, char *encoded) {
     }
 
     fprintf(stdout, VALID_ENCRYPTING_MSG, k);
-    return;
 }
+
+
+
+//void encodeCase(FILE* readingFile, FILE* writingFile, int k)
+//{
+//    MOD(k);
+//    encode(readingFile, writingFile, k);
+//}
+//
+//
+//void decodeCase(FILE* readingFile, FILE* writingFile, int k)
+//{
+//    k = -k;
+//    MOD(k);
+//    encode(readingFile, writingFile, k);
+//}
+
+//void decode(FILE* readingFile, FILE* writingFile, int k)
+//{
+//    char c;
+//    while ((c = fgetc(readingFile)) != EOF)
+//    {
+//        c = decodeChar(c, k);
+//        fputc(c, writingFile);
+//    }
+//}
+
+//
+//char decodeChar(char c, int k)
+//{
+//    k = -k;
+//    MOD(k);
+////    k >= 0 ? (k = k) : (k = LETTERS_NUM + k);
+//    return encodeChar(c, k);
+//}
+
 
 int tests()
 {
     int x;
     char* argv[5];
 
-    char* read = "C:\\Users\\miris\\CLionProjects\\ex1\\read";
-    char* write = "C:\\Users\\miris\\CLionProjects\\ex1\\write";
+    char* read = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/read";
+    char* write = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/write";
+//    char* read = "C:\\Users\\miris\\CLionProjects\\ex1\\read";
+//    char* write = "C:\\Users\\miris\\CLionProjects\\ex1\\write";
 
 
     fprintf(stderr, "~~~~~~~~~0~~~~~~~~~~~~\n");
@@ -466,8 +455,10 @@ int tests()
 
     fprintf(stderr, "\n\n##########   valid   ###########\n\n");
 
-    char* readA = "C:\\Users\\miris\\CLionProjects\\ex1\\readA";
-    char* readZ = "C:\\Users\\miris\\CLionProjects\\ex1\\readZ";
+//    char* readA = "C:\\Users\\miris\\CLionProjects\\ex1\\readA";
+//    char* readZ = "C:\\Users\\miris\\CLionProjects\\ex1\\readZ";
+    char* readA = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readA";
+    char* readZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readZ";
 
     fprintf(stderr, "~~~~~~~~~1~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
@@ -545,7 +536,8 @@ int tests()
     assert(x == 0);
     assert(strcmp(writeRes, "z lJY!y") == 0);
 
-    char* readB = "C:\\Users\\miris\\CLionProjects\\ex1\\readB";
+//    char* readB = "C:\\Users\\miris\\CLionProjects\\ex1\\readB";
+    char* readB = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readB";
 
     fprintf(stderr, "~~~~~~~6~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 1\n");
@@ -573,8 +565,10 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x == 0);
 
-    char* invalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\invalidReadZ";
-    char* shortInvalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\shortInvalidZ";
+//    char* invalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\invalidReadZ";
+//    char* shortInvalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\shortInvalidZ";
+    char* invalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/invalidReadZ";
+    char* shortInvalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/shortInvalidZ";
 
     fprintf(stderr, "~~~~~~~9~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Invalid encrypting\n");
