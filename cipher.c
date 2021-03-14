@@ -181,25 +181,31 @@ int checkCommandCheck(int argc, char **argv)
 
 void encodeCase(FILE* readingFile, FILE* writingFile, int k)
 {
-    if (k >= 0)
-    {
-        encode(readingFile, writingFile, k);
-    } else
-    {
-        decode(readingFile, writingFile, -k);
-    }
+    MOD(k);
+    encode(readingFile, writingFile, k);
+
+//    if (k >= 0)
+//    {
+//        encode(readingFile, writingFile, k);
+//    } else
+//    {
+//        decode(readingFile, writingFile, -k);
+//    }
 }
 
 
 void decodeCase(FILE* readingFile, FILE* writingFile, int k)
 {
-    if (k >= 0)
-    {
-        decode(readingFile, writingFile, k);
-    } else
-    {
-        encode(readingFile, writingFile, -k);
-    }
+    k = -k;
+    MOD(k);
+    encode(readingFile, writingFile, k);
+//    if (k >= 0)
+//    {
+//        decode(readingFile, writingFile, k);
+//    } else
+//    {
+//        encode(readingFile, writingFile, -k);
+//    }
 }
 
 
@@ -227,15 +233,15 @@ void encode(FILE* readingFile, FILE* writingFile, int k)
 }
 
 
-void decode(FILE* readingFile, FILE* writingFile, int k)
-{
-    char c;
-    while ((c = fgetc(readingFile)) != EOF)
-    {
-        c = decodeChar(c, k);
-        fputc(c, writingFile);
-    }
-}
+//void decode(FILE* readingFile, FILE* writingFile, int k)
+//{
+//    char c;
+//    while ((c = fgetc(readingFile)) != EOF)
+//    {
+//        c = decodeChar(c, k);
+//        fputc(c, writingFile);
+//    }
+//}
 
 char encodeChar(char c, int k)
 {
@@ -255,14 +261,14 @@ char encodeChar(char c, int k)
     return c;
 }
 
-
-char decodeChar(char c, int k)
-{
-    k = -k;
-    MOD(k);
-//    k >= 0 ? (k = k) : (k = LETTERS_NUM + k);
-    return encodeChar(c, k);
-}
+//
+//char decodeChar(char c, int k)
+//{
+//    k = -k;
+//    MOD(k);
+////    k >= 0 ? (k = k) : (k = LETTERS_NUM + k);
+//    return encodeChar(c, k);
+//}
 
 
 void check(char *origin, char *encoded) {
