@@ -17,12 +17,5 @@ void encode(const FILE* readingFile, FILE* writingFile, int k);
 void check(char *origin, char *encoded);
 char encodeChar(char c, int k);
 
-//int allChecks(int argc, char* argv[]);
-//void encodeCase(FILE* readingFile, FILE* writingFile, int k);
-//void decodeCase(FILE* readingFile, FILE* writingFile, int k);
-//int checkReadingFile(char* readingFileName, char* WritingFileName, char* command, int k);
-//char decodeChar(char c, int k);
-//void decode(FILE* readingFile, FILE* writingFile, int k);
-
 
 #endif //EX1_CIPHER_H

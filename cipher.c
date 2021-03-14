@@ -10,13 +10,12 @@
 #include <assert.h>
 #include <math.h>
 
-#define MOD(k) k >= 0 ? (k = k) : (k = LETTERS_NUM + k)
+#define MOD(k) (k) >= 0 ? ((k) = (k)) : ((k) = LETTERS_NUM + (k))
 
 const char* CHECK_ERROR_MSG = "Usage: cipher <check> <source path file> <output path file>\n";
 const char* ENCODE_ERROR_MSG = "Usage: cipher <encode|decode> <k> <source path file> <output path file>\n";
 const char* INVALID_FILE_MSG = "The given file is invalid\n";
 const char* INVALID_COMMAND_MSG = "The given command is invalid\n";
-const char* INVALID_SHIFT_MSG = "The given shifts value is invalid\n";
 const char* INVALID_ENCRYPTING_MSG = "Invalid encrypting\n";
 const char* VALID_ENCRYPTING_MSG = "Valid encrypting with k = %d\n";
 const char* ENCODE_COMMAND = "encode";
@@ -30,7 +29,16 @@ const int LOWER_CASE_E_RANGE = 122;
 const int UPPER_CASE_S_RANGE = 65;
 const int UPPER_CASE_E_RANGE = 90;
 const int LETTERS_NUM = 26;
-
+const int COMMAND = 1;
+const int IS_ENCODE = 1;
+const int IS_DECODE = 0;
+const int ARGS_NUM_CHECK = 4;
+const int ARGS_NUM_ENCODE = 5;
+const int K = 2;
+const int READING_FILE = 3;
+const int WRITING_FILE = 4;
+const int ORIGIN_FILE = 2;
+const int ENCRYPTED_FILE = 3;
 
 
 
@@ -51,7 +59,7 @@ int main(int argc, char* argv[]) {
  */
 int checkCommand(int argc, char* argv[])
 {
-    char* command = argv[1];
+    char* command = argv[COMMAND];
     if (command == NULL)
     {
         fprintf(stderr, "%s", INVALID_COMMAND_MSG);
@@ -60,11 +68,11 @@ int checkCommand(int argc, char* argv[])
 
     if (!strcmp(command, ENCODE_COMMAND))
     {
-        return checkEncode(argc, argv, 1);
+        return checkEncode(argc, argv, IS_ENCODE);
     }
     else if(!strcmp(command, DECODE_COMMAND))
     {
-        return checkEncode(argc, argv, 0);
+        return checkEncode(argc, argv, IS_DECODE);
     }
     else if (!strcmp(command, CHECK_COMMAND))
     {
@@ -85,32 +93,21 @@ int checkCommand(int argc, char* argv[])
  */
 int checkEncode(int argc, char* argv[], int isEncode)
 {
-    if (checkArgsNum(argc, 5, ENCODE_ERROR_MSG))
+    if (checkArgsNum(argc, ARGS_NUM_ENCODE, ENCODE_ERROR_MSG))
     {
         return EXIT_FAILURE;
     }
 
-    int k = atoi(argv[2]);
+    int k = atoi(argv[K]);
 
-    FILE* readingFile = fopen(argv[3], READ_MODE);
-    FILE* writingFile = fopen(argv[4], WRITE_MODE);
+    FILE* readingFile = fopen(argv[READING_FILE], READ_MODE);
+    FILE* writingFile = fopen(argv[WRITING_FILE], WRITE_MODE);
     if (readingFile == NULL)
     {
         fprintf(stderr, "%s", INVALID_FILE_MSG);
         return EXIT_FAILURE;
     }
-//    if (isEncode)
-//    {
-////        encodeCase(readingFile, writingFile, k);
-////        MOD(k);
-////        encode(readingFile, writingFile, k);
-//    } else
-//    {
-////        decodeCase(readingFile, writingFile, k);
-//        k = -k;
-////        MOD(k);
-////        encode(readingFile, writingFile, k);
-//    }
+
     isEncode ? (k = k) : (k = -k);
     MOD(k);
     encode(readingFile, writingFile, k);
@@ -131,13 +128,13 @@ int checkEncode(int argc, char* argv[], int isEncode)
 int checkCommandCheck(int argc, char **argv)
 {
 
-    if (checkArgsNum(argc, 4, CHECK_ERROR_MSG))
+    if (checkArgsNum(argc, ARGS_NUM_CHECK, CHECK_ERROR_MSG))
     {
         return EXIT_FAILURE;
     }
 
-    FILE* readingFile = fopen(argv[2], READ_MODE);
-    FILE* writingFile = fopen(argv[3], READ_MODE);
+    FILE* readingFile = fopen(argv[ORIGIN_FILE], READ_MODE);
+    FILE* writingFile = fopen(argv[ENCRYPTED_FILE], READ_MODE);
     if (readingFile == NULL || writingFile == NULL)
     {
         fprintf(stderr, "%s", INVALID_FILE_MSG);    // todo: close?
@@ -202,7 +199,7 @@ void encode(const FILE* readingFile, FILE* writingFile, int k)
  */
 char encodeChar(char c, int k)
 {
-    int firstInGap = 0;
+    int firstInGap;
     if ((LOWER_CASE_S_RANGE <= c && c <= LOWER_CASE_E_RANGE) || (UPPER_CASE_S_RANGE <= c && c <= UPPER_CASE_E_RANGE))
     {
         if (LOWER_CASE_S_RANGE <= c)
@@ -248,39 +245,6 @@ void check(char *origin, char *encoded) {
 }
 
 
-
-//void encodeCase(FILE* readingFile, FILE* writingFile, int k)
-//{
-//    MOD(k);
-//    encode(readingFile, writingFile, k);
-//}
-//
-//
-//void decodeCase(FILE* readingFile, FILE* writingFile, int k)
-//{
-//    k = -k;
-//    MOD(k);
-//    encode(readingFile, writingFile, k);
-//}
-
-//void decode(FILE* readingFile, FILE* writingFile, int k)
-//{
-//    char c;
-//    while ((c = fgetc(readingFile)) != EOF)
-//    {
-//        c = decodeChar(c, k);
-//        fputc(c, writingFile);
-//    }
-//}
-
-//
-//char decodeChar(char c, int k)
-//{
-//    k = -k;
-//    MOD(k);
-////    k >= 0 ? (k = k) : (k = LETTERS_NUM + k);
-//    return encodeChar(c, k);
-//}
 
 
 int tests()
