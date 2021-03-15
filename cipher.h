@@ -7,7 +7,7 @@
 
 int tests();    //todo: delete
 
-
+int isLetter(char c);
 int checkArgsNum(int argNum,  int rightArgsNum, const char* msg);
 int checkEncode(int argc, char* argv[], int isEncode);
 int checkCommand(int argc, char* argv[]);

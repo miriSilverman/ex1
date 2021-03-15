@@ -43,7 +43,9 @@ const int ENCRYPTED_FILE = 3;
 
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
+//    printf("%d\n", isLetter('Z'));
     return tests();
 //    return checkCommand(argc, argv);
 }
@@ -200,7 +202,8 @@ void encode(const FILE* readingFile, FILE* writingFile, int k)
 char encodeChar(char c, int k)
 {
     int firstInGap;
-    if ((LOWER_CASE_S_RANGE <= c && c <= LOWER_CASE_E_RANGE) || (UPPER_CASE_S_RANGE <= c && c <= UPPER_CASE_E_RANGE))
+//    if ((LOWER_CASE_S_RANGE <= c && c <= LOWER_CASE_E_RANGE) || (UPPER_CASE_S_RANGE <= c && c <= UPPER_CASE_E_RANGE))
+    if (isLetter(c))
     {
         if (LOWER_CASE_S_RANGE <= c)
         {
@@ -213,6 +216,15 @@ char encodeChar(char c, int k)
         c = (c - firstInGap + k) % LETTERS_NUM + firstInGap;
     }
     return c;
+}
+
+/**
+ * @param c  char
+ * @return 1 if c is an english letter, 0 otherwise
+ */
+int isLetter(char c)
+{
+    return (LOWER_CASE_S_RANGE <= c && c <= LOWER_CASE_E_RANGE) || (UPPER_CASE_S_RANGE <= c && c <= UPPER_CASE_E_RANGE);
 }
 
 /**
@@ -229,7 +241,17 @@ void check(char *origin, char *encoded) {
     }
 
     int i = 0;
-    int k = encoded[0] - origin[0] ;
+    while (!isLetter(encoded[i]))
+    {
+        if (encoded[i] != origin[i])
+        {
+            fprintf(stdout, "%s", INVALID_ENCRYPTING_MSG);
+            return;
+        }
+        i++;
+    }
+
+    int k = encoded[i] - origin[i] ;
     MOD(k);
     while (origin[i] != '\0')
     {
@@ -252,10 +274,10 @@ int tests()
     int x;
     char* argv[5];
 
-    char* read = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/read";
-    char* write = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/write";
-//    char* read = "C:\\Users\\miris\\CLionProjects\\ex1\\read";
-//    char* write = "C:\\Users\\miris\\CLionProjects\\ex1\\write";
+//    char* read = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/read";
+//    char* write = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/write";
+    char* read = "C:\\Users\\miris\\CLionProjects\\ex1\\read";
+    char* write = "C:\\Users\\miris\\CLionProjects\\ex1\\write";
 
 
     fprintf(stderr, "~~~~~~~~~0~~~~~~~~~~~~\n");
@@ -419,10 +441,10 @@ int tests()
 
     fprintf(stderr, "\n\n##########   valid   ###########\n\n");
 
-//    char* readA = "C:\\Users\\miris\\CLionProjects\\ex1\\readA";
-//    char* readZ = "C:\\Users\\miris\\CLionProjects\\ex1\\readZ";
-    char* readA = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readA";
-    char* readZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readZ";
+    char* readA = "C:\\Users\\miris\\CLionProjects\\ex1\\readA";
+    char* readZ = "C:\\Users\\miris\\CLionProjects\\ex1\\readZ";
+//    char* readA = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readA";
+//    char* readZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readZ";
 
     fprintf(stderr, "~~~~~~~~~1~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
@@ -500,8 +522,8 @@ int tests()
     assert(x == 0);
     assert(strcmp(writeRes, "z lJY!y") == 0);
 
-//    char* readB = "C:\\Users\\miris\\CLionProjects\\ex1\\readB";
-    char* readB = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readB";
+    char* readB = "C:\\Users\\miris\\CLionProjects\\ex1\\readB";
+//    char* readB = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readB";
 
     fprintf(stderr, "~~~~~~~6~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 1\n");
@@ -529,10 +551,10 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x == 0);
 
-//    char* invalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\invalidReadZ";
-//    char* shortInvalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\shortInvalidZ";
-    char* invalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/invalidReadZ";
-    char* shortInvalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/shortInvalidZ";
+    char* invalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\invalidReadZ";
+    char* shortInvalidReadZ = "C:\\Users\\miris\\CLionProjects\\ex1\\shortInvalidZ";
+//    char* invalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/invalidReadZ";
+//    char* shortInvalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/shortInvalidZ";
 
     fprintf(stderr, "~~~~~~~9~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Invalid encrypting\n");
@@ -578,12 +600,43 @@ int tests()
     assert(x == 0);
     assert(strcmp(writeRes, "a mKZ!z") == 0);
 
+    char* startNoLetter = "C:\\Users\\miris\\CLionProjects\\ex1\\startNL";
+    char* startNoLetterOut = "C:\\Users\\miris\\CLionProjects\\ex1\\startNLout";
+    char* startNoLetterNot = "C:\\Users\\miris\\CLionProjects\\ex1\\startNLnot";
+
+    fprintf(stderr, "~~~~~~~13~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "should:  Valid encrypting with k = 1\n");
+    argv2[1] = "check";
+    argv2[2] = startNoLetter;
+    argv2[3] = startNoLetterOut;
+    x = checkCommand(4, argv2);
+    assert(x == 0);
+
+    fprintf(stderr, "~~~~~~~14~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "should:  Invalid encrypting\n");
+    argv2[1] = "check";
+    argv2[2] = startNoLetter;
+    argv2[3] = startNoLetterNot;
+    x = checkCommand(4, argv2);
+    assert(x == 0);
+
+    fprintf(stderr, "~~~~~~~15~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "should:  Valid encrypting with k = 0\n");
+    argv2[1] = "check";
+    argv2[2] = startNoLetter;
+    argv2[3] = startNoLetter;
+    x = checkCommand(4, argv2);
+    assert(x == 0);
 
 //    Valid encrypting with k = 1
 //    Valid encrypting with k = 25
 //    Valid encrypting with k = 1
 //    Invalid encrypting
 //    Invalid encrypting
+//    Valid encrypting with k = 1
+//    Invalid encrypting
+
+
 
 
 
