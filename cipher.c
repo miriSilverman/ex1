@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "cipher.h"
+//#include "cipher.h"
 #include <string.h>
 #include <assert.h>
 #include <math.h>
@@ -41,13 +41,23 @@ const int ORIGIN_FILE = 2;
 const int ENCRYPTED_FILE = 3;
 
 
+int tests();    //todo: delete
+
+int isLetter(char c);
+int checkArgsNum(int argNum,  int rightArgsNum, const char* msg);
+int checkEncode(int argc, char* argv[], int isEncode);
+int checkCommand(int argc, char* argv[]);
+int checkCommandCheck(int argc, char **argv);
+
+void encode(const FILE* readingFile, FILE* writingFile, int k);
+void check(char *origin, char *encoded);
+char encodeChar(char c, int k);
 
 
 int main(int argc, char* argv[])
 {
-//    printf("%d\n", isLetter('Z'));
-    return tests();
-//    return checkCommand(argc, argv);
+//    return tests();
+    return checkCommand(argc, argv);
 }
 
 
@@ -202,7 +212,6 @@ void encode(const FILE* readingFile, FILE* writingFile, int k)
 char encodeChar(char c, int k)
 {
     int firstInGap;
-//    if ((LOWER_CASE_S_RANGE <= c && c <= LOWER_CASE_E_RANGE) || (UPPER_CASE_S_RANGE <= c && c <= UPPER_CASE_E_RANGE))
     if (isLetter(c))
     {
         if (LOWER_CASE_S_RANGE <= c)
@@ -374,27 +383,9 @@ int tests()
     x = checkCommand(6, argv5);
     assert(x != 0); // "Usage: cipher <check> <source path file> <output path file>\n"
 
-//    fprintf(stderr, "~~~~~~~~~9~~~~~~~~~~~~\n");
-//    fprintf(stderr, "should:  The given shifts value is invalid\n");
-//
-//    argv[1] = "encode";
-//    argv[2] = "0";
-//    argv[3] = read;
-//    argv[4] = write;
-//    x = checkCommand(5, argv);
-//    assert(x == 0); //    "The given shifts value is invalid\n"
 
-//    fprintf(stderr, "~~~~~~~~~9~~~~~~~~~~~~\n");
-//    fprintf(stderr, "should:  The given shifts value is invalid\n");
-//
-//    argv[1] = "decode";
-//    argv[2] = "0";
-//    argv[3] = read;
-//    argv[4] = write;
-//    x = checkCommand(5, argv);
-//    assert(x != 0); //    "The given shifts value is invalid\n"
 
-    fprintf(stderr, "~~~~~~~~~10~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~9~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  The given file is invalid\n");
 
     argv[1] = "encode";
@@ -404,7 +395,7 @@ int tests()
     x = checkCommand(5, argv);
     assert(x != 0); //   "The given file is invalid\n"
 
-    fprintf(stderr, "~~~~~~~~~11~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~10~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  The given file is invalid\n");
 
     argv[1] = "decode";
@@ -415,7 +406,7 @@ int tests()
     assert(x != 0); //   "The given file is invalid\n"
 
 
-    fprintf(stderr, "~~~~~~~12~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~11~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  The given file is invalid\n");
 
     argv2[1] = "check";
@@ -424,7 +415,7 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x != 0); //    "The given file is invalid\n"
 
-    fprintf(stderr, "~~~~~~~13~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~12~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  The given file is invalid\n");
 
     argv2[1] = "check";
@@ -446,7 +437,7 @@ int tests()
 //    char* readA = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readA";
 //    char* readZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readZ";
 
-    fprintf(stderr, "~~~~~~~~~1~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~13~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "encode";
@@ -464,7 +455,7 @@ int tests()
 
 
 
-    fprintf(stderr, "~~~~~~~~~2~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~14~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "encode";
@@ -479,7 +470,7 @@ int tests()
     assert(strcmp(writeRes, "z lJY!y") == 0);
 
 
-    fprintf(stderr, "~~~~~~~~~3~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~15~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "encode";
@@ -494,7 +485,7 @@ int tests()
     assert(strcmp(writeRes, "b nLA!a") == 0);
 
 
-    fprintf(stderr, "~~~~~~~~~4~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~16~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "decode";
@@ -508,7 +499,7 @@ int tests()
     assert(x == 0);
     assert(strcmp(writeRes, "b nLA!a") == 0);
 
-    fprintf(stderr, "~~~~~~~~~5~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~17~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "decode";
@@ -525,7 +516,7 @@ int tests()
     char* readB = "C:\\Users\\miris\\CLionProjects\\ex1\\readB";
 //    char* readB = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/readB";
 
-    fprintf(stderr, "~~~~~~~6~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~18~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 1\n");
     argv2[1] = "check";
     argv2[2] = readA;
@@ -534,7 +525,7 @@ int tests()
     assert(x == 0); //    Valid encrypting with k = 1
 
 
-    fprintf(stderr, "~~~~~~~7~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~19~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 25\n");
     argv2[1] = "check";
     argv2[2] = readA;
@@ -543,7 +534,7 @@ int tests()
     assert(x == 0);
 
 
-    fprintf(stderr, "~~~~~~~8~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~20~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 1\n");
     argv2[1] = "check";
     argv2[2] = readZ;
@@ -556,7 +547,7 @@ int tests()
 //    char* invalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/invalidReadZ";
 //    char* shortInvalidReadZ = "/cs/usr/miri_silverman/CLionProjects/ex1CTA/shortInvalidZ";
 
-    fprintf(stderr, "~~~~~~~9~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~21~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Invalid encrypting\n");
     argv2[1] = "check";
     argv2[2] = readA;
@@ -564,7 +555,7 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x == 0);
 
-    fprintf(stderr, "~~~~~~~10~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~22~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Invalid encrypting\n");
     argv2[1] = "check";
     argv2[2] = readA;
@@ -572,7 +563,7 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x == 0);
 
-    fprintf(stderr, "~~~~~~~~~11~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~23~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "encode";
@@ -586,7 +577,7 @@ int tests()
     assert(x == 0);
     assert(strcmp(writeRes, "a mKZ!z") == 0);
 
-    fprintf(stderr, "~~~~~~~~~12~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~~~24~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  \n");
 
     argv[1] = "decode";
@@ -604,7 +595,7 @@ int tests()
     char* startNoLetterOut = "C:\\Users\\miris\\CLionProjects\\ex1\\startNLout";
     char* startNoLetterNot = "C:\\Users\\miris\\CLionProjects\\ex1\\startNLnot";
 
-    fprintf(stderr, "~~~~~~~13~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~25~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 1\n");
     argv2[1] = "check";
     argv2[2] = startNoLetter;
@@ -612,7 +603,7 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x == 0);
 
-    fprintf(stderr, "~~~~~~~14~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~26~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Invalid encrypting\n");
     argv2[1] = "check";
     argv2[2] = startNoLetter;
@@ -620,7 +611,7 @@ int tests()
     x = checkCommand(4, argv2);
     assert(x == 0);
 
-    fprintf(stderr, "~~~~~~~15~~~~~~~~~~~~~~\n");
+    fprintf(stderr, "~~~~~~~27~~~~~~~~~~~~~~\n");
     fprintf(stderr, "should:  Valid encrypting with k = 0\n");
     argv2[1] = "check";
     argv2[2] = startNoLetter;
@@ -635,6 +626,7 @@ int tests()
 //    Invalid encrypting
 //    Valid encrypting with k = 1
 //    Invalid encrypting
+//    Valid encrypting with k = 0
 
 
 
