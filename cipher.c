@@ -685,7 +685,6 @@
 #define ORIGIN_FILE 2
 #define ENCRYPTED_FILE 3
 
-
 int IsLetter (char c);
 int CheckArgsNum (int argNum, int rightArgsNum, const char *msg);
 int CheckEncode (int argc, char **argv, int isEncode);
@@ -799,19 +798,71 @@ int CheckCommandCheck (int argc, char **argv)
       return EXIT_FAILURE;
     }
 
-  char origin[MAX_TEXT_SIZE];
-  char encrypted[MAX_TEXT_SIZE];
+  char origin;
+  char encrypted;
+  int k = 0;
+  int initK = 0;
+  fseek (reading_file, 0L, SEEK_END);
+  fseek (writing_file, 0L, SEEK_END);
 
-  if (ReadFile (origin, reading_file, writing_file))
+  if (ftell (reading_file) != ftell (writing_file))
     {
+      fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
       return EXIT_FAILURE;
     }
-  if (ReadFile (encrypted, writing_file, reading_file))
-    {
-      return EXIT_FAILURE;
-    }
+  fseek (reading_file, 0L, SEEK_SET);
+  fseek (writing_file, 0L, SEEK_SET);
 
-  Check (origin, encrypted);
+
+  do
+    {
+      origin = fgetc (reading_file);
+      encrypted = fgetc (writing_file);
+//      printf ("%c %c\n", origin, encrypted);
+      if (IsLetter (origin) && !initK)
+        {
+          k = encrypted - origin;
+          MOD (k);
+          initK = 1;
+        }
+      else if (EncodeChar (origin, k) != encrypted)
+        {
+          fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
+          fclose (reading_file);
+          fclose (writing_file);
+          return EXIT_FAILURE;
+        }
+    }
+    while (origin != EOF);
+//  while ((origin = fgetc (reading_file)) != EOF)
+//  {
+//    encrypted = fgetc (writing_file);
+//    printf ("c is : %c \n", origin);
+//  }
+  fprintf (stdout, VALID_ENCRYPTING_MSG, k);
+
+
+
+//  char origin[MAX_TEXT_SIZE];
+//  char encrypted[MAX_TEXT_SIZE];
+
+//  if (ReadFile (origin, reading_file, writing_file))
+//    {
+//      return EXIT_FAILURE;
+//    }
+//  if (ReadFile (encrypted, writing_file, reading_file))
+//    {
+//      return EXIT_FAILURE;
+//    }
+
+//  while (fgets (origin, MAX_TEXT_SIZE, reading_file) != NULL
+//         && fgets (encrypted, MAX_TEXT_SIZE, writing_file) != NULL)
+//    {
+//      Check (origin, encrypted);
+//    }
+
+
+//  Check (origin, encrypted);
 
   fclose (reading_file);
   fclose (writing_file);
@@ -919,7 +970,7 @@ void Check (char *origin, char *encoded)
     }
 
   int i = 0;
-  while (!IsLetter (encoded[i]))
+  while (!IsLetter (encoded[i]) && i < strlen (origin))
     {
       if (encoded[i] != origin[i])
         {
