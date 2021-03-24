@@ -692,9 +692,10 @@ int CheckCommand (int argc, char **argv);
 int CheckCommandCheck (int argc, char **argv);
 int ReadFile (char *buffer, FILE *curFile, FILE *otherFile);
 void Encode (FILE *reading_file, FILE *writing_file, int k);
-void Check (char *origin, char *encoded);
+//void Check (char *origin, char *encoded);
 char EncodeChar (char c, int k);
 
+int Check (const FILE *reading_file, const FILE *writing_file);
 int main (int argc, char *argv[])
 {
   return CheckCommand (argc, argv);
@@ -798,10 +799,6 @@ int CheckCommandCheck (int argc, char **argv)
       return EXIT_FAILURE;
     }
 
-  char origin;
-  char encrypted;
-  int k = 0;
-  int initK = 0;
   fseek (reading_file, 0L, SEEK_END);
   fseek (writing_file, 0L, SEEK_END);
 
@@ -810,15 +807,35 @@ int CheckCommandCheck (int argc, char **argv)
       fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
       return EXIT_FAILURE;
     }
+
   fseek (reading_file, 0L, SEEK_SET);
   fseek (writing_file, 0L, SEEK_SET);
 
+  int res =  Check (reading_file, writing_file);
+  fclose (reading_file);
+  fclose (writing_file);
+  return res;
+}
 
+
+
+/**
+ *
+ * @param reading_file file of string not encrypted
+ * @param writing_file file of encrypted string
+ * @return EXIT_FAILURE for invalid encryption EXIT_SUCCESS for valid encryption
+ */
+int Check (const FILE *reading_file, const FILE *writing_file)
+{
+  char origin;
+  char encrypted;
+  int k = 0;
+  int initK = 0;
   do
     {
       origin = fgetc (reading_file);
       encrypted = fgetc (writing_file);
-//      printf ("%c %c\n", origin, encrypted);
+
       if (IsLetter (origin) && !initK)
         {
           k = encrypted - origin;
@@ -828,46 +845,125 @@ int CheckCommandCheck (int argc, char **argv)
       else if (EncodeChar (origin, k) != encrypted)
         {
           fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
-          fclose (reading_file);
-          fclose (writing_file);
+//          fclose (reading_file);
+//          fclose (writing_file);
           return EXIT_FAILURE;
         }
     }
-    while (origin != EOF);
-//  while ((origin = fgetc (reading_file)) != EOF)
-//  {
-//    encrypted = fgetc (writing_file);
-//    printf ("c is : %c \n", origin);
-//  }
+  while (origin != EOF);
+
   fprintf (stdout, VALID_ENCRYPTING_MSG, k);
 
-
-
-//  char origin[MAX_TEXT_SIZE];
-//  char encrypted[MAX_TEXT_SIZE];
-
-//  if (ReadFile (origin, reading_file, writing_file))
-//    {
-//      return EXIT_FAILURE;
-//    }
-//  if (ReadFile (encrypted, writing_file, reading_file))
-//    {
-//      return EXIT_FAILURE;
-//    }
-
-//  while (fgets (origin, MAX_TEXT_SIZE, reading_file) != NULL
-//         && fgets (encrypted, MAX_TEXT_SIZE, writing_file) != NULL)
-//    {
-//      Check (origin, encrypted);
-//    }
-
-
-//  Check (origin, encrypted);
-
-  fclose (reading_file);
-  fclose (writing_file);
+//  fclose (reading_file);
+//  fclose (writing_file);
   return EXIT_SUCCESS;
 }
+
+
+
+
+
+//
+///**
+// * Checks if the command check is valid
+// * @param argc number of arguments
+// * @param argv the arguments
+// * @return EXIT_FAILURE if the command line is invalid or if there is a problem with the files,
+// * otherwise EXIT_SUCCESS
+// */
+//int CheckCommandCheck (int argc, char **argv)
+//{
+//
+//  if (CheckArgsNum (argc, ARGS_NUM_CHECK, CHECK_ERROR_MSG))
+//    {
+//      return EXIT_FAILURE;
+//    }
+//
+//  FILE *reading_file = fopen (argv[ORIGIN_FILE], READ_MODE);
+//  if (reading_file == NULL)
+//    {
+//      fprintf (stderr, "%s", INVALID_FILE_MSG);
+//      return EXIT_FAILURE;
+//    }
+//
+//  FILE *writing_file = fopen (argv[ENCRYPTED_FILE], READ_MODE);
+//  if (writing_file == NULL)
+//    {
+//      fprintf (stderr, "%s", INVALID_FILE_MSG);
+//      fclose (reading_file);
+//      return EXIT_FAILURE;
+//    }
+//
+//  char origin;
+//  char encrypted;
+//  int k = 0;
+//  int initK = 0;
+//  fseek (reading_file, 0L, SEEK_END);
+//  fseek (writing_file, 0L, SEEK_END);
+//
+//  if (ftell (reading_file) != ftell (writing_file))
+//    {
+//      fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
+//      return EXIT_FAILURE;
+//    }
+//  fseek (reading_file, 0L, SEEK_SET);
+//  fseek (writing_file, 0L, SEEK_SET);
+//
+//
+//  do
+//    {
+//      origin = fgetc (reading_file);
+//      encrypted = fgetc (writing_file);
+////      printf ("%c %c\n", origin, encrypted);
+//      if (IsLetter (origin) && !initK)
+//        {
+//          k = encrypted - origin;
+//          MOD (k);
+//          initK = 1;
+//        }
+//      else if (EncodeChar (origin, k) != encrypted)
+//        {
+//          fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
+//          fclose (reading_file);
+//          fclose (writing_file);
+//          return EXIT_FAILURE;
+//        }
+//    }
+//  while (origin != EOF);
+////  while ((origin = fgetc (reading_file)) != EOF)
+////  {
+////    encrypted = fgetc (writing_file);
+////    printf ("c is : %c \n", origin);
+////  }
+//  fprintf (stdout, VALID_ENCRYPTING_MSG, k);
+//
+//
+//
+////  char origin[MAX_TEXT_SIZE];
+////  char encrypted[MAX_TEXT_SIZE];
+//
+////  if (ReadFile (origin, reading_file, writing_file))
+////    {
+////      return EXIT_FAILURE;
+////    }
+////  if (ReadFile (encrypted, writing_file, reading_file))
+////    {
+////      return EXIT_FAILURE;
+////    }
+//
+////  while (fgets (origin, MAX_TEXT_SIZE, reading_file) != NULL
+////         && fgets (encrypted, MAX_TEXT_SIZE, writing_file) != NULL)
+////    {
+////      Check (origin, encrypted);
+////    }
+//
+//
+////  Check (origin, encrypted);
+//
+//  fclose (reading_file);
+//  fclose (writing_file);
+//  return EXIT_SUCCESS;
+//}
 
 /**
  * @param buffer buffer to read into the content of the file
@@ -954,44 +1050,44 @@ int IsLetter (char c)
          (UPPER_CASE_S_RANGE <= c && c <= UPPER_CASE_E_RANGE);
 
 }
-
-/**
- * Checks if the string encoded is a valid caesar cipher of the string origin, if it is
- * valid - prints the k, otherwise prints a message
- * @param origin string not encrypted
- * @param encoded encrypted string
- */
-void Check (char *origin, char *encoded)
-{
-  if (strlen (origin) != strlen (encoded))
-    {
-      fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
-      return;
-    }
-
-  int i = 0;
-  while (!IsLetter (encoded[i]) && i < strlen (origin))
-    {
-      if (encoded[i] != origin[i])
-        {
-          fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
-          return;
-        }
-      i++;
-    }
-
-  int k = encoded[i] - origin[i];
-  MOD(k);
-  while (origin[i] != '\0')
-    {
-      if (EncodeChar (origin[i], k) != encoded[i])
-        {
-          fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
-          return;
-        }
-      i++;
-    }
-
-  fprintf (stdout, VALID_ENCRYPTING_MSG, k);
-}
+//
+///**
+// * Checks if the string encoded is a valid caesar cipher of the string origin, if it is
+// * valid - prints the k, otherwise prints a message
+// * @param origin string not encrypted
+// * @param encoded encrypted string
+// */
+//void Check (char *origin, char *encoded)
+//{
+//  if (strlen (origin) != strlen (encoded))
+//    {
+//      fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
+//      return;
+//    }
+//
+//  int i = 0;
+//  while (!IsLetter (encoded[i]) && i < strlen (origin))
+//    {
+//      if (encoded[i] != origin[i])
+//        {
+//          fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
+//          return;
+//        }
+//      i++;
+//    }
+//
+//  int k = encoded[i] - origin[i];
+//  MOD(k);
+//  while (origin[i] != '\0')
+//    {
+//      if (EncodeChar (origin[i], k) != encoded[i])
+//        {
+//          fprintf (stdout, "%s", INVALID_ENCRYPTING_MSG);
+//          return;
+//        }
+//      i++;
+//    }
+//
+//  fprintf (stdout, VALID_ENCRYPTING_MSG, k);
+//}
 
